@@ -1,6 +1,7 @@
 const db = require("../config/db.js");
 const config = require("../config/config.js");
 const Artikel = db.artikel;
+const User = db.user;
 const asyncMiddleware = require("express-async-handler");
 const { validationResult } = require("express-validator/check");
 const { body } = require("express-validator/check");
@@ -39,7 +40,7 @@ exports.artikel = asyncMiddleware(async (req, res, next) => {
   }
 });
 
-//menampilkan semua artikel
+//menampilkan semua artikel include user
 exports.tampilartikel = asyncMiddleware(async (req, res) => {
   const artikel = await Artikel.findAll({
     attributes: ["id", "judul", "isi", "userId", "status"]
@@ -52,22 +53,25 @@ exports.tampilartikel = asyncMiddleware(async (req, res) => {
 
 // //mencari artikel berdasarkan id
 exports.findartikelbyid = asyncMiddleware(async (req, res) => {
-  const artikel = await Artikel.findOne({
+  const user = await User.findOne({
     where: { id: req.params.id },
-    attributes: ["id", "judul", "isi", "userId", "status"]
+    attributes: ["id", "name", "username", "email"],
+    include: [
+      {
+        model: Artikel,
+        attributes: ["id", "judul", "isi"]
+      }
+    ]
   });
   res.status(200).json({
     description: "artikel by id",
-    artikel: artikel
+    user: user
   });
 });
 
 exports.updateArtikel = asyncMiddleware(async (req, res) => {
   await Artikel.update(
     {
-      judul: req.body.judul,
-      isi: req.body.isi,
-      userId: req.params.id,
       status: req.body.status
     },
     { where: { id: req.params.id } }

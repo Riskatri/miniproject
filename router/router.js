@@ -2,7 +2,7 @@ const verifySignUp = require("./verifySignUp");
 const authJwt = require("./verifyJwtToken");
 const authController = require("../controller/authController.js");
 const userController = require("../controller/userController.js");
-// const orderController = require("../controller/orderController");
+const commentController = require("../controller/commentController.js");
 const artikelController = require("../controller/artikelController");
 // const validController = require("../controller/validController");
 
@@ -33,7 +33,7 @@ module.exports = function(app) {
   app.post(
     //tambah autjwt admin
     "/articles/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken],
     // validController.checkValidationBook,
     artikelController.validate("artikel"),
     artikelController.artikel
@@ -57,8 +57,25 @@ module.exports = function(app) {
     artikelController.updateArtikel
   );
 
-  //   //order
-  //   app.post("/orders/:id", [authJwt.verifyToken], orderController.Order);
+  //   komentar
+  app.post(
+    "/comments/:userId/:artikelId",
+    [authJwt.verifyToken],
+    commentController.comment
+  );
+  app.get("/comments", [authJwt.verifyToken], commentController.tampilkomentar);
+  app.get(
+    "/comments/:id",
+    [authJwt.verifyToken],
+    commentController.komentarbyid
+  );
+
+  app.put(
+    //tmbh aut admin
+    "/comments/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    commentController.updateKomentar
+  );
   //   app.get("/orders", [authJwt.verifyToken], orderController.users);
   //   app.get("/orders/:id", [authJwt.verifyToken], orderController.userContent);
 };

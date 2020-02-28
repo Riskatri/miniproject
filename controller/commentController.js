@@ -1,6 +1,7 @@
 const db = require("../config/db.js");
 const config = require("../config/config.js");
-const Comment = db.comment;
+const Komentar = db.komentar;
+const Artikel = db.artikel;
 const asyncMiddleware = require("express-async-handler");
 const { validationResult } = require("express-validator/check");
 const { body } = require("express-validator/check");
@@ -12,7 +13,7 @@ var bcrypt = require("bcryptjs");
 exports.validate = method => {
   switch (method) {
     case "comment": {
-      return [body("isi", "maksimal 300 kata").isLength({ max: 300 })];
+      return [body("isi_comment", "maksimal 300 kata").isLength({ max: 300 })];
     }
   }
 };
@@ -25,16 +26,71 @@ exports.comment = asyncMiddleware(async (req, res, next) => {
       res.status(404).json({ errors: errors.array() });
       return;
     }
-    await Comment.create({
+
+    await Komentar.create({
       isi_comment: req.body.isi_comment,
       status: req.body.status,
-      artikelId: req.body.id,
-      userId: req.params.id
+      artikelId: req.params.artikelId,
+      userId: req.params.userId
     });
+
     res.status(201).send({
       status: "Comment has been created!"
     });
   } catch (err) {
     return next(err);
+  }
+});
+
+//include user
+exports.tampilkomentar = asyncMiddleware(async (req, res) => {
+  const artikel = await Artikel.findAll({
+    attributes: ["id", "judul", "isi"],
+    include: [
+      {
+        model: Komentar,
+        attributes: ["id", "isi_comment", "status", "artikelId", "userId"]
+      }
+    ]
+  });
+  res.status(200).json({
+    description: "All komentar",
+    artikel: artikel
+  });
+});
+
+exports.komentarbyid = asyncMiddleware(async (req, res) => {
+  const artikel = await Artikel.findOne({
+    where: { id: req.params.id },
+    attributes: ["judul", "isi"],
+    include: [
+      {
+        model: Komentar,
+        attributes: ["id", "isi_comment", "status", "artikelId", "userId"]
+      }
+    ]
+  });
+  res.status(200).json({
+    description: "comment by id",
+    artikel: artikel
+  });
+});
+
+exports.updateKomentar = asyncMiddleware(async (req, res) => {
+  const komentar = await Komentar.update(
+    {
+      status: req.body.status //bisa bernilai true
+    },
+    { where: { id: req.params.id } }
+  );
+  const statusIsValid = (req.body.status, komentar.status);
+  if (!statusIsValid) {
+    return res.status(201).send({
+      reason: "komentar diaktifkan"
+    });
+  } else if (statusIsValid) {
+    return res.status(404).send({
+      reason: "komentar non aktif"
+    });
   }
 });

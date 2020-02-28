@@ -27,12 +27,18 @@ exports.userbyid = asyncMiddleware(async (req, res) => {
 exports.updateUser = asyncMiddleware(async (req, res) => {
   await User.update(
     {
-      userId: req.body.id,
       status: req.body.status
     },
-    { where: { id: req.params.id } }
+    { where: { id: req.params.id } } //tmbh if
   );
-  res.status(201).send({
-    status: "User has been update!"
-  });
+  const statusIsValid = (req.body.status, user.status);
+  if (!statusIsValid) {
+    return res.status(201).send({
+      reason: "user active"
+    });
+  } else if (statusIsValid) {
+    return res.status(404).send({
+      reason: "user hasbeen blocked!"
+    });
+  }
 });
