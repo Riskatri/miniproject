@@ -19,7 +19,7 @@ exports.validate = method => {
 };
 
 //post a comment
-exports.comment = asyncMiddleware(async (req, res, next) => {
+exports.komentar = asyncMiddleware(async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -83,14 +83,21 @@ exports.updateKomentar = asyncMiddleware(async (req, res) => {
     },
     { where: { id: req.params.id } }
   );
-  const statusIsValid = (req.body.status, komentar.status);
-  if (!statusIsValid) {
+  // const statusIsValid = (req.body.status, komentar.status);
+  if (komentar.status === true) {
     return res.status(201).send({
-      reason: "komentar diaktifkan"
+      status: "komentar aktif"
     });
-  } else if (statusIsValid) {
+  } else {
     return res.status(404).send({
-      reason: "komentar non aktif"
+      status: "komentar  non aktif"
     });
   }
+});
+
+exports.deleteKomentar = asyncMiddleware(async (req, res) => {
+  await Komentar.destroy({ where: { id: req.params.id } });
+  res.status(201).send({
+    status: "comment has been delete"
+  });
 });

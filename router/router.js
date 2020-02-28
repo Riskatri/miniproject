@@ -61,7 +61,7 @@ module.exports = function(app) {
   app.post(
     "/comments/:userId/:artikelId",
     [authJwt.verifyToken],
-    commentController.comment
+    commentController.komentar
   );
   app.get("/comments", [authJwt.verifyToken], commentController.tampilkomentar);
   app.get(
@@ -75,6 +75,13 @@ module.exports = function(app) {
     "/comments/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     commentController.updateKomentar
+  );
+
+  app.delete(
+    //tmbh aut admin
+    "/comments/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    commentController.deleteKomentar
   );
   //   app.get("/orders", [authJwt.verifyToken], orderController.users);
   //   app.get("/orders/:id", [authJwt.verifyToken], orderController.userContent);

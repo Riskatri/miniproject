@@ -70,15 +70,22 @@ exports.findartikelbyid = asyncMiddleware(async (req, res) => {
 });
 
 exports.updateArtikel = asyncMiddleware(async (req, res) => {
-  await Artikel.update(
+  const artikel = await Artikel.update(
     {
       status: req.body.status
     },
     { where: { id: req.params.id } }
   );
-  res.status(201).send({
-    status: "Artikel has been update!"
-  });
+  // const statusIsValid = (req.body.status, artikel.status);
+  if (artikel.status === true) {
+    return res.status(201).send({
+      reason: "article show"
+    });
+  } else {
+    return res.status(404).send({
+      reason: "article hide"
+    });
+  }
 });
 
 exports.deleteArtikel = asyncMiddleware(async (req, res) => {
