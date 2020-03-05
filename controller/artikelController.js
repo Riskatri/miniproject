@@ -2,6 +2,7 @@ const db = require("../config/db.js");
 const config = require("../config/config.js");
 const Artikel = db.artikel;
 const User = db.user;
+const Komentar = db.komentar;
 const asyncMiddleware = require("express-async-handler");
 const { validationResult } = require("express-validator/check");
 const { body } = require("express-validator/check");
@@ -13,7 +14,7 @@ var bcrypt = require("bcryptjs");
 exports.validate = method => {
   switch (method) {
     case "artikel": {
-      return [body("isi", "maksimal 300 kata").isLength({ max: 300 })];
+      return [body("judul", "maksimal 50 kata").isLength({ max: 50 })];
     }
   }
 };
@@ -43,7 +44,13 @@ exports.artikel = asyncMiddleware(async (req, res, next) => {
 //menampilkan semua artikel include user
 exports.tampilartikel = asyncMiddleware(async (req, res) => {
   const artikel = await Artikel.findAll({
-    attributes: ["id", "judul", "isi", "userId", "status"]
+    attributes: ["id", "judul", "isi", "userId", "status", "createdAt"],
+    include: [
+      {
+        model: Komentar,
+        attributes: ["id", "isi_comment", "userId", "createdAt"]
+      }
+    ]
   });
   res.status(200).json({
     description: "All Artikel",
@@ -51,21 +58,48 @@ exports.tampilartikel = asyncMiddleware(async (req, res) => {
   });
 });
 
-// //mencari artikel berdasarkan id
+exports.tampilartikelguess = asyncMiddleware(async (req, res) => {
+  const artikel = await Artikel.findAll({
+    attributes: ["id", "judul", "isi", "userId", "status", "createdAt"]
+  });
+  res.status(200).json({
+    description: "All Artikel",
+    artikel: artikel
+  });
+});
+
+// //mencari artikel berdasarkan id user
 exports.findartikelbyid = asyncMiddleware(async (req, res) => {
   const user = await User.findOne({
     where: { id: req.params.id },
-    attributes: ["id", "name", "username", "email"],
+    attributes: ["id", "name", "username"],
     include: [
       {
         model: Artikel,
-        attributes: ["id", "judul", "isi"]
+        attributes: ["id", "judul", "isi", "createdAt"]
       }
     ]
   });
   res.status(200).json({
     description: "artikel by id",
     user: user
+  });
+});
+
+exports.artikelId = asyncMiddleware(async (req, res) => {
+  const artikel = await Artikel.findAll({
+    where: { id: req.params.id },
+    attributes: ["id", "judul", "isi", "createdAt"],
+    include: [
+      {
+        model: Komentar,
+        attributes: ["id", "isi_comment", "userId"]
+      }
+    ]
+  });
+  res.status(200).json({
+    description: "artikel by id",
+    artikel: artikel
   });
 });
 
@@ -82,7 +116,7 @@ exports.updateArtikel = asyncMiddleware(async (req, res) => {
       reason: "article show"
     });
   } else {
-    return res.status(404).send({
+    return res.status(201).send({
       reason: "article hide"
     });
   }

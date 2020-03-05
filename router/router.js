@@ -3,7 +3,7 @@ const authJwt = require("./verifyJwtToken");
 const authController = require("../controller/authController.js");
 const userController = require("../controller/userController.js");
 const commentController = require("../controller/commentController.js");
-const artikelController = require("../controller/artikelController");
+const artikelController = require("../controller/artikelController.js");
 // const validController = require("../controller/validController");
 
 module.exports = function(app) {
@@ -34,12 +34,19 @@ module.exports = function(app) {
     //tambah autjwt admin
     "/articles/:id",
     [authJwt.verifyToken],
-    // validController.checkValidationBook,
+
     artikelController.validate("artikel"),
     artikelController.artikel
   );
 
   app.get("/articles", [authJwt.verifyToken], artikelController.tampilartikel);
+  app.get(
+    "/get/articles/:id",
+    [authJwt.verifyToken],
+    artikelController.artikelId
+  );
+
+  app.get("/guess/articles", artikelController.tampilartikelguess);
   app.get(
     "/articles/:id",
     [authJwt.verifyToken],
@@ -54,7 +61,7 @@ module.exports = function(app) {
   app.delete(
     "/articles/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
-    artikelController.updateArtikel
+    artikelController.deleteArtikel
   );
 
   //   komentar
@@ -80,9 +87,7 @@ module.exports = function(app) {
   app.delete(
     //tmbh aut admin
     "/comments/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken],
     commentController.deleteKomentar
   );
-  //   app.get("/orders", [authJwt.verifyToken], orderController.users);
-  //   app.get("/orders/:id", [authJwt.verifyToken], orderController.userContent);
 };

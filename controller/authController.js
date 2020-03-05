@@ -1,6 +1,7 @@
 const db = require("../config/db.js");
 const config = require("../config/config.js");
 const User = db.user;
+const Artikel = db.artikel;
 const asyncMiddleware = require("express-async-handler");
 const { validationResult } = require("express-validator/check");
 const { body } = require("express-validator/check");
@@ -96,6 +97,8 @@ exports.signin = asyncMiddleware(async (req, res) => {
     auth: true,
     type: "Bearer",
     accessToken: token,
-    id: user.id
+    id: user.id,
+    status: user.status,
+    admin: user.admin
   });
 });

@@ -33,11 +33,11 @@ exports.updateUser = asyncMiddleware(async (req, res) => {
   );
 
   if (user.status === true) {
-    return res.status(201).send({
+    res.status(201).send({
       reason: "user active"
     });
   } else {
-    return res.status(404).send({
+    return res.status(201).send({
       reason: "user hasbeen blocked!"
     });
   }

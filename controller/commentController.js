@@ -2,6 +2,7 @@ const db = require("../config/db.js");
 const config = require("../config/config.js");
 const Komentar = db.komentar;
 const Artikel = db.artikel;
+const User = db.user;
 const asyncMiddleware = require("express-async-handler");
 const { validationResult } = require("express-validator/check");
 const { body } = require("express-validator/check");
@@ -44,7 +45,8 @@ exports.komentar = asyncMiddleware(async (req, res, next) => {
 
 //include user
 exports.tampilkomentar = asyncMiddleware(async (req, res) => {
-  const artikel = await Artikel.findAll({
+  const artikel = await Artikel.findOne({
+    where: { id: req.params.id },
     attributes: ["id", "judul", "isi"],
     include: [
       {
@@ -89,7 +91,7 @@ exports.updateKomentar = asyncMiddleware(async (req, res) => {
       status: "komentar aktif"
     });
   } else {
-    return res.status(404).send({
+    return res.status(201).send({
       status: "komentar  non aktif"
     });
   }
