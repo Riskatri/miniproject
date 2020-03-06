@@ -80,7 +80,7 @@ module.exports = function(app) {
   app.put(
     //tmbh aut admin
     "/comments/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken],
     commentController.updateKomentar
   );
 

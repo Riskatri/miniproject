@@ -47,8 +47,14 @@ exports.tampilartikel = asyncMiddleware(async (req, res) => {
     attributes: ["id", "judul", "isi", "userId", "status", "createdAt"],
     include: [
       {
-        model: Komentar,
-        attributes: ["id", "isi_comment", "userId", "createdAt"]
+        model: User,
+        attributes: ["name"],
+        include: [
+          {
+            model: Komentar,
+            attributes: ["id", "isi_comment", "userId", "status", "createdAt"]
+          }
+        ]
       }
     ]
   });
@@ -60,7 +66,19 @@ exports.tampilartikel = asyncMiddleware(async (req, res) => {
 
 exports.tampilartikelguess = asyncMiddleware(async (req, res) => {
   const artikel = await Artikel.findAll({
-    attributes: ["id", "judul", "isi", "userId", "status", "createdAt"]
+    attributes: ["id", "judul", "isi", "userId", "status", "createdAt"],
+    include: [
+      {
+        model: User,
+        attributes: ["name"],
+        include: [
+          {
+            model: Komentar,
+            attributes: ["id", "isi_comment", "userId", "status", "createdAt"]
+          }
+        ]
+      }
+    ]
   });
   res.status(200).json({
     description: "All Artikel",
@@ -93,7 +111,13 @@ exports.artikelId = asyncMiddleware(async (req, res) => {
     include: [
       {
         model: Komentar,
-        attributes: ["id", "isi_comment", "userId"]
+        attributes: ["id", "isi_comment", "userId", "status"],
+        include: [
+          {
+            model: User,
+            attributes: ["name"]
+          }
+        ]
       }
     ]
   });

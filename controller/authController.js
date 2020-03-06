@@ -35,7 +35,7 @@ exports.signup = asyncMiddleware(async (req, res, next) => {
       name: req.body.name,
       username: req.body.username,
       email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 8),
+      password: bcrypt.hashSync(req.body.password, 6),
       admin: req.body.admin,
       status: req.body.status
     });

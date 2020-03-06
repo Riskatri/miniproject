@@ -45,13 +45,19 @@ exports.komentar = asyncMiddleware(async (req, res, next) => {
 
 //include user
 exports.tampilkomentar = asyncMiddleware(async (req, res) => {
-  const artikel = await Artikel.findOne({
+  const artikel = await Artikel.findAll({
     where: { id: req.params.id },
     attributes: ["id", "judul", "isi"],
     include: [
       {
         model: Komentar,
-        attributes: ["id", "isi_comment", "status", "artikelId", "userId"]
+        attributes: ["id", "isi_comment", "status", "artikelId", "userId"],
+        include: [
+          {
+            model: User,
+            attributes: ["name"]
+          }
+        ]
       }
     ]
   });
@@ -68,7 +74,16 @@ exports.komentarbyid = asyncMiddleware(async (req, res) => {
     include: [
       {
         model: Komentar,
-        attributes: ["id", "isi_comment", "status", "artikelId", "userId"]
+        where: { status: true },
+        attributes: ["id", "isi_comment", "status", "artikelId", "userId"],
+        required: false,
+        require: false,
+        include: [
+          {
+            model: User,
+            attributes: ["name"]
+          }
+        ]
       }
     ]
   });
