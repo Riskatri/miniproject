@@ -99,6 +99,7 @@ exports.signin = asyncMiddleware(async (req, res) => {
     accessToken: token,
     id: user.id,
     status: user.status,
-    admin: user.admin
+    admin: user.admin,
+    username: user.username
   });
 });
