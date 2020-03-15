@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
 
     status: {
       type: Sequelize.BOOLEAN
+    },
+    img: {
+      type: Sequelize.STRING
     }
   });
   return Artikel;

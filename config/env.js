@@ -1,5 +1,5 @@
 const env = {
-  database: "mini_project",
+  database: "contohupload",
   username: "root",
   password: "handayani17",
   host: "localhost",

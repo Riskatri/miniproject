@@ -31,7 +31,8 @@ exports.artikel = asyncMiddleware(async (req, res, next) => {
       judul: req.body.judul,
       isi: req.body.isi,
       userId: req.params.id,
-      status: req.body.status
+      status: req.body.status,
+      img: req.body.img
     });
     res.status(201).send({
       status: "Artikel has been created!"
@@ -44,7 +45,7 @@ exports.artikel = asyncMiddleware(async (req, res, next) => {
 //menampilkan semua artikel include user
 exports.tampilartikel = asyncMiddleware(async (req, res) => {
   const artikel = await Artikel.findAll({
-    attributes: ["id", "judul", "isi", "userId", "status", "createdAt"],
+    attributes: ["id", "judul", "isi", "userId", "status", "createdAt", "img"],
     include: [
       {
         model: User,
@@ -66,7 +67,7 @@ exports.tampilartikel = asyncMiddleware(async (req, res) => {
 
 exports.tampilartikelguess = asyncMiddleware(async (req, res) => {
   const artikel = await Artikel.findAll({
-    attributes: ["id", "judul", "isi", "userId", "status", "createdAt"],
+    attributes: ["id", "judul", "isi", "userId", "status", "createdAt", "img"],
     include: [
       {
         model: User,
@@ -94,7 +95,7 @@ exports.findartikelbyid = asyncMiddleware(async (req, res) => {
     include: [
       {
         model: Artikel,
-        attributes: ["id", "judul", "isi", "createdAt"]
+        attributes: ["id", "judul", "isi", "createdAt", "img"]
       }
     ]
   });
@@ -107,7 +108,7 @@ exports.findartikelbyid = asyncMiddleware(async (req, res) => {
 exports.artikelId = asyncMiddleware(async (req, res) => {
   const artikel = await Artikel.findAll({
     where: { id: req.params.id },
-    attributes: ["id", "judul", "isi", "createdAt"],
+    attributes: ["id", "judul", "isi", "createdAt", "img"],
     include: [
       {
         model: Komentar,
