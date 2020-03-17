@@ -39,7 +39,7 @@ app.post("/upload", function(req, res) {
   });
 });
 
-var server = app.listen(7000, "127.0.0.1", function() {
+var server = app.listen(6100, "127.0.0.1", function() {
   var host = server.address().address;
   var port = server.address().port;
   console.log("App listening at http://%s:%s", host, port);
