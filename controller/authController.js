@@ -3,8 +3,7 @@ const config = require("../config/config.js");
 const User = db.user;
 const Artikel = db.artikel;
 const asyncMiddleware = require("express-async-handler");
-const { validationResult } = require("express-validator/check");
-const { body } = require("express-validator/check");
+const { validationResult, body } = require("express-validator");
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -42,18 +41,18 @@ exports.signup = asyncMiddleware(async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-  // const sgMail = require("@sendgrid/mail");
-  // sgMail.setApiKey(
-  //   "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"
-  // );
-  // const msg = {
-  //   to: req.body.email,
-  //   from: "secretadmirer@example.com",
-  //   subject: "Sending Verify Your account",
-  //   text: "thankyou for register",
-  //   html: "<strong>thankyou for register, enjoy with your code</strong>"
-  // };
-  // sgMail.send(msg);
+  const sgMail = require("@sendgrid/mail");
+  sgMail.setApiKey(
+    "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"
+  );
+  const msg = {
+    to: req.body.email,
+    from: "secretadmirer@example.com",
+    subject: "Sending Verify Your account",
+    text: "thankyou for register",
+    html: "<strong>thankyou for register, enjoy with your code</strong>"
+  };
+  sgMail.send(msg);
 
   res.status(201).send({
     status: "User registered successfully!"

@@ -4,8 +4,7 @@ const Artikel = db.artikel;
 const User = db.user;
 const Komentar = db.komentar;
 const asyncMiddleware = require("express-async-handler");
-const { validationResult } = require("express-validator/check");
-const { body } = require("express-validator/check");
+const { validationResult, body } = require("express-validator");
 
 const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
