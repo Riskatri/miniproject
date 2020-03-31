@@ -48,13 +48,11 @@ exports.tampilartikel = asyncMiddleware(async (req, res) => {
     include: [
       {
         model: User,
-        attributes: ["name"],
-        include: [
-          {
-            model: Komentar,
-            attributes: ["id", "isi_comment", "userId", "status", "createdAt"]
-          }
-        ]
+        attributes: ["name"]
+      },
+      {
+        model: Komentar,
+        attributes: ["id", "isi_comment", "userId", "status", "createdAt"]
       }
     ]
   });
@@ -95,6 +93,16 @@ exports.findartikelbyid = asyncMiddleware(async (req, res) => {
       {
         model: Artikel,
         attributes: ["id", "judul", "isi", "createdAt", "img"]
+      },
+      {
+        model: Komentar,
+        attributes: ["id", "isi_comment", "userId", "status"],
+        include: [
+          {
+            model: User,
+            attributes: ["name"]
+          }
+        ]
       }
     ]
   });
